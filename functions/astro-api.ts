@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import serverless from 'serverless-http';
-import * as sweph from 'sweph';
 import path from 'path';
 import cors from 'cors';
 import { promisify } from 'util';
@@ -12,33 +11,6 @@ app.use(express.json());
 
 // Enable CORS for all routes
 app.use(cors());
-
-// Main endpoint for positions
-app.get('/api/julday', async (req: Request, res: Response) => {
-  // Initialize sweph
-  try {
-    sweph.set_ephe_path(process.env.SWEPH_PATH || path.join(__dirname, 'ephemeris'));
-  } catch (error) {
-    console.error('Error setting ephemeris path:', error);
-  }
-
-  try {
-    // Convert to Julian day with timezone-adjusted values
-    const now = new Date();
-    const julday = sweph.julday(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      now.getDay(),
-      now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600,
-      sweph.constants.SE_GREG_CAL
-    );
-
-    const result = { julday };
-    return res.json(result);
-  } catch (error: any) {
-    return res.status(500).json({ error: error.message });
-  }
-});
 
 // Health check endpoint
 app.get('/api/health', async (_req: Request, res: Response) => {
