@@ -13,15 +13,15 @@ app.use(express.json());
 // Enable CORS for all routes
 app.use(cors());
 
-// Initialize sweph
-try {
-  sweph.set_ephe_path(process.env.SWEPH_PATH || path.join(__dirname, 'ephemeris'));
-} catch (error) {
-  console.error('Error setting ephemeris path:', error);
-}
-
 // Main endpoint for positions
 app.get('/api/julday', async (req: Request, res: Response) => {
+  // Initialize sweph
+  try {
+    sweph.set_ephe_path(process.env.SWEPH_PATH || path.join(__dirname, 'ephemeris'));
+  } catch (error) {
+    console.error('Error setting ephemeris path:', error);
+  }
+
   try {
     // Convert to Julian day with timezone-adjusted values
     const now = new Date();
